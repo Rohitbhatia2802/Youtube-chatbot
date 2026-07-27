@@ -5,7 +5,7 @@ def get_retriever(
     vectorstore,
     llm=None,
     search_type: str = "similarity",
-    k: int = 4,
+    k: int = 2,
     use_multi_query: bool = False
 ):
   
