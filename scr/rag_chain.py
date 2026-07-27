@@ -33,7 +33,7 @@ def get_llm():
         base_url="https://openrouter.ai/api/v1",
         api_key=api_key,
         temperature=0,
-        max_tokens=256,
+        max_tokens=128,
     )
 
 llm = get_llm()
