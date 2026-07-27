@@ -29,7 +29,7 @@ def get_llm():
         api_key = st.secrets["OPENROUTER_API_KEY"]
 
     return ChatOpenAI(
-        model="deepseek/deepseek-chat-v3-0324",
+        model="openai/gpt-oss-20b:free",
         base_url="https://openrouter.ai/api/v1",
         api_key=api_key,
         temperature=0,
