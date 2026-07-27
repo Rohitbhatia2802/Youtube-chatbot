@@ -1,4 +1,6 @@
-from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
+import os
+from dotenv import load_dotenv
 
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough,RunnableLambda
@@ -17,12 +19,16 @@ from prompt import (
     get_history_aware_prompt,
 )
 
+load_dotenv()
 
 
 
-llm=ChatOllama(
-    model="llama3.2",
-    temperature=0
+llm = ChatOpenAI(
+    model="deepseek/deepseek-chat-v3-0324",
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("OPENROUTER_API_KEY"),
+    temperature=0,
+    max_tokens=256
 )
 
 parser=StrOutputParser()
