@@ -137,18 +137,17 @@ def answer_question(
     question: str,
     chat_history: list
 ):
-    """
-    Uses the existing RAG chain to answer a user's question.
-    """
 
-    answer = rag_chain.invoke(
-        {
-            "question": question,
-            "chat_history": chat_history
-        }
-    )
+    try:
+        return rag_chain.invoke(
+            {
+                "question": question,
+                "chat_history": chat_history
+            }
+        )
 
-    return answer
+    except Exception as e:
+        raise RuntimeError(str(e))
 
 
 if __name__ == "__main__":
