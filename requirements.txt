@@ -18,3 +18,5 @@ python-dotenv
 pypdf
 beautifulsoup4
 lxml
+
+yt-dlp

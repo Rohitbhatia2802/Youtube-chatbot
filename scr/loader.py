@@ -1,5 +1,7 @@
 from urllib.parse import urlparse, parse_qs
-from youtube_transcript_api import YouTubeTranscriptApi
+import yt_dlp
+import os
+import tempfile
 from langchain_core.documents import Document
 
 
@@ -19,7 +21,6 @@ def extract_video_id(url: str) -> str:
 
 
 def load_transcript(url: str):
-    
 
     video_id = extract_video_id(url)
 
@@ -27,23 +28,54 @@ def load_transcript(url: str):
         raise ValueError("Could not extract Video ID.")
 
     try:
-        ytt_api = YouTubeTranscriptApi()
 
-        transcript = ytt_api.fetch(video_id, languages=["en"])
+        with tempfile.TemporaryDirectory() as temp_dir:
 
-        transcript_text = " ".join(
-        chunk.text for chunk in transcript
-)   
-
-        document = Document(
-            page_content=transcript_text,
-            metadata={
-                "video_id": video_id,
-                "source": url
+            ydl_opts = {
+                "writesubtitles": True,
+                "writeautomaticsub": True,
+                "skip_download": True,
+                "subtitleslangs": ["en"],
+                "outtmpl": os.path.join(temp_dir, "%(id)s.%(ext)s"),
+                "quiet": True,
             }
-        )
 
-        return document,video_id
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([url])
+
+            transcript_text = ""
+
+            for file in os.listdir(temp_dir):
+                if file.endswith(".vtt"):
+                    with open(
+                        os.path.join(temp_dir, file),
+                        encoding="utf-8"
+                    ) as f:
+
+                        lines = f.readlines()
+
+                    transcript_text = " ".join(
+                        line.strip()
+                        for line in lines
+                        if "-->" not in line
+                        and not line.startswith("WEBVTT")
+                        and line.strip()
+                    )
+
+                    break
+
+            if not transcript_text:
+                raise RuntimeError("English subtitles not found.")
+
+            document = Document(
+                page_content=transcript_text,
+                metadata={
+                    "video_id": video_id,
+                    "source": url,
+                },
+            )
+
+            return document, video_id
 
     except Exception as e:
         raise RuntimeError(f"Failed to load transcript: {e}")
