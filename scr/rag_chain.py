@@ -1,6 +1,7 @@
 from langchain_openai import ChatOpenAI
 import os
 from dotenv import load_dotenv
+import streamlit as st
 
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough,RunnableLambda
@@ -21,15 +22,21 @@ from prompt import (
 
 load_dotenv()
 
+def get_llm():
+    api_key = os.getenv("OPENROUTER_API_KEY")
 
+    if api_key is None:
+        api_key = st.secrets["OPENROUTER_API_KEY"]
 
-llm = ChatOpenAI(
-    model="deepseek/deepseek-chat-v3-0324",
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("OPENROUTER_API_KEY"),
-    temperature=0,
-    max_tokens=256
-)
+    return ChatOpenAI(
+        model="deepseek/deepseek-chat-v3-0324",
+        base_url="https://openrouter.ai/api/v1",
+        api_key=api_key,
+        temperature=0,
+        max_tokens=256,
+    )
+
+llm = get_llm()
 
 parser=StrOutputParser()
 
