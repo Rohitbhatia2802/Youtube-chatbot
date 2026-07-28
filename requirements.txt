@@ -6,6 +6,7 @@ langchain-openai
 langchain-chroma
 langchain-huggingface
 langchain-text-splitters
+langchain-google-genai
 
 chromadb
 sentence-transformers

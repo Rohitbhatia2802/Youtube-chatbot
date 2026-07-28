@@ -1,4 +1,4 @@
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 import os
 from dotenv import load_dotenv
 import streamlit as st
@@ -23,17 +23,15 @@ from prompt import (
 load_dotenv()
 
 def get_llm():
-    api_key = os.getenv("OPENROUTER_API_KEY")
+    api_key = os.getenv("GOOGLE_API_KEY")
 
     if api_key is None:
-        api_key = st.secrets["OPENROUTER_API_KEY"]
+        api_key = st.secrets["GOOGLE_API_KEY"]
 
-    return ChatOpenAI(
-        model="qwen/qwen3-32b:free",
-        base_url="https://openrouter.ai/api/v1",
-        api_key=api_key,
-        temperature=0,
-        max_tokens=256,
+    return ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash",
+    google_api_key=os.getenv("GOOGLE_API_KEY"),
+    temperature=0,
     )
 
 llm = get_llm()
