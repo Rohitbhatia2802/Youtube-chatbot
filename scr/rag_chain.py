@@ -29,11 +29,11 @@ def get_llm():
         api_key = st.secrets["OPENROUTER_API_KEY"]
 
     return ChatOpenAI(
-        model="openai/gpt-oss-20b:free",
+        model="qwen/qwen3-32b:free",
         base_url="https://openrouter.ai/api/v1",
         api_key=api_key,
         temperature=0,
-        max_tokens=128,
+        max_tokens=256,
     )
 
 llm = get_llm()
